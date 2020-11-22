@@ -3,7 +3,7 @@ import '../styles/APOD.css';
 import React, {useState, useEffect} from "react";
 import axios from "axios";
 
-import {APOD_API_URL, API_KEY} from "../const/const.js";
+import {APOD_API_URL, API_KEY} from "../mic/mic";
 
 
 const errorObj ={
@@ -18,7 +18,6 @@ const errorObj ={
 const Carousel = props => {
   return (
     <div className="Carousel">
-
     </div>
   )
 }
@@ -44,7 +43,6 @@ const APODImg = props => {
 function APOD() {
 
   const [apodObj, setApodObj] = useState({});
-  const [apodDate, setApodDate] = useState('2020-10-04');
 
 
   
@@ -53,6 +51,7 @@ function APOD() {
     .get(`${APOD_API_URL}?api_key=${API_KEY}`)
     .then(res => {
         setApodObj(res.data);
+        console.log(apodObj);
     })
     .catch(err => {
         console.log("Error: ",err);
@@ -60,21 +59,7 @@ function APOD() {
     })
   },[]);
 
-  useEffect(() => {
-    axios
-    .get(`${APOD_API_URL}?api_key=${API_KEY}&date=${apodDate}`)
-    .then(res => {
-        setUserApodObj(res.data);
-    })
-    .catch(err => {
-        console.log("Error: ",err);
-        setApodObj(errorObj);
-    })
-},[apodDate]);
-
-  const changeDate = date => {
-    setApodDate(date);
-  }
+  
 
   return (
     <div className="APOD-container">
