@@ -2,8 +2,10 @@ import '../styles/APOD.css';
 
 import React, {useState, useEffect} from "react";
 import axios from "axios";
+import moment from "moment";
 
 import {APOD_API_URL, API_KEY} from "../mic/mic";
+import { date } from 'yup';
 
 
 const errorObj ={
@@ -14,6 +16,11 @@ const errorObj ={
   hdurl : "n/a",
   copyright : "n/a",
 };
+
+
+
+
+
 
 const Carousel = props => {
   return (
@@ -42,22 +49,37 @@ const APODImg = props => {
 
 function APOD() {
 
-  const [apodObj, setApodObj] = useState({});
-
+  const [carouselDateArray, setCarouselDateArray] = useState([]);
 
   
-  useEffect(() => {
+  useEffect (() => {
+    // Using moment library to get dates for Carousel
+    const dates = carouselDateArray;
+
+    for (let i = 0; i < 5; i++) {
+      dates.push(moment().subtract(i, 'day').format('YYYY-MM-DD').toString());
+    }
+    
+    setCarouselDateArray(dates);
+  }, []);
+
+
+  //const [carouselObj, setCarouselObj] = useState([]);
+
+  
+
+  
+  /*useEffect(() => {
     axios
     .get(`${APOD_API_URL}?api_key=${API_KEY}`)
     .then(res => {
-        setApodObj(res.data);
-        console.log(apodObj);
+      setCarouselObj(res.data);
+        console.log(res.data);
     })
     .catch(err => {
         console.log("Error: ",err);
-        setApodObj(errorObj);
     })
-  },[]);
+  },[]);*/
 
   
 
