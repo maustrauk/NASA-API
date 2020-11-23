@@ -16,12 +16,27 @@ const errorObj ={
   copyright : "n/a",
 };
 
+const loader = (callback, date) => {
+//Loading APOD's objects
+  axios
+      .get(`${APOD_API_URL}?api_key=${API_KEY}&date=${date}`)
+        .then(res => {
+          callback(res.data);
+        })
+        .catch(err => {
+          console.log("Error: ",err);
+        });
 
+}
 
 
 const Carousel = props => {
+
+  const {obj1, obj2, obj3, obj4, obj5} = props;
+
   return (
     <div className="Carousel">
+      <img src={obj1.url} alt="Carousel 1"/>
     </div>
   )
 }
@@ -50,8 +65,17 @@ const APODImg = props => {
 function APOD() {
 
   const [carouselDateArray, setCarouselDateArray] = useState([]);//dates array
-  const [APODImgObj, setAPODImgObj] = useState({});// APOD objects
   
+
+  // APOD objects
+  const [APODImgObj, setAPODImgObj] = useState({});
+  const [carouselObj1, setCarouselObj1] = useState({});
+  const [carouselObj2, setCarouselObj2] = useState({});
+  const [carouselObj3, setCarouselObj3] = useState({});
+  const [carouselObj4, setCarouselObj4] = useState({});
+  const [carouselObj5, setCarouselObj5] = useState({});
+
+
   useEffect (() => {
     // Using moment library to get dates for Carousel
     const dates = carouselDateArray;
@@ -66,15 +90,12 @@ function APOD() {
   
   useEffect(() => {
 
-    axios
-      .get(`${APOD_API_URL}?api_key=${API_KEY}&date=${carouselDateArray[0]}`)
-        .then(res => {
-          setAPODImgObj(res.data);
-        })
-        .catch(err => {
-          console.log("Error: ",err);
-        })
-    
+    loader(setAPODImgObj, carouselDateArray[0]);
+    loader(setCarouselObj1,carouselDateArray[1]);
+    loader(setCarouselObj2,carouselDateArray[2]);
+    loader(setCarouselObj3,carouselDateArray[3]);
+    loader(setCarouselObj4,carouselDateArray[4]);
+    loader(setCarouselObj5,carouselDateArray[5]);
 
 
   },[]);
@@ -83,7 +104,7 @@ function APOD() {
 
   return (
     <div className="APOD-container">
-      <Carousel />
+      <Carousel obj1={carouselObj1} obj2={carouselObj2} obj3={carouselObj3} obj4={carouselObj4} obj5={carouselObj5}/>
       <div className="under-carousel">
         <APODForm />
         <APODImg APODobj={APODImgObj}/>
