@@ -49,37 +49,47 @@ const APODImg = props => {
 
 function APOD() {
 
-  const [carouselDateArray, setCarouselDateArray] = useState([]);
-
+  const [carouselDateArray, setCarouselDateArray] = useState([]);//dates array
+  const [carouselObjArray, setCarouselObjArray] = useState([]);// APOD objects
   
   useEffect (() => {
     // Using moment library to get dates for Carousel
     const dates = carouselDateArray;
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       dates.push(moment().subtract(i, 'day').format('YYYY-MM-DD').toString());
     }
     
     setCarouselDateArray(dates);
   }, []);
-
-
-  //const [carouselObj, setCarouselObj] = useState([]);
-
   
-
   
-  /*useEffect(() => {
-    axios
-    .get(`${APOD_API_URL}?api_key=${API_KEY}`)
-    .then(res => {
-      setCarouselObj(res.data);
-        console.log(res.data);
-    })
-    .catch(err => {
-        console.log("Error: ",err);
-    })
-  },[]);*/
+  useEffect(() => {
+
+    //Setting up array of JSON obj from APOD API
+
+    function provider(date) {
+
+      const tempData = [];
+
+      axios
+      .get(`${APOD_API_URL}?api_key=${API_KEY}&date=${date}`)
+        .then(res => {
+          tempData.push(res.data);
+        })
+        .catch(err => {
+          console.log("Error: ",err);
+        })
+
+        return tempData;
+
+    }
+
+
+    setCarouselObjArray(carouselDateArray.map(date => provider(date)));
+
+
+  },[carouselDateArray]);
 
   
 
