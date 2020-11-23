@@ -5,7 +5,6 @@ import axios from "axios";
 import moment from "moment";
 
 import {APOD_API_URL, API_KEY} from "../mic/mic";
-import { date } from 'yup';
 
 
 const errorObj ={
@@ -16,8 +15,6 @@ const errorObj ={
   hdurl : "n/a",
   copyright : "n/a",
 };
-
-
 
 
 
@@ -38,9 +35,12 @@ const APODForm = props => {
 }
 
 const APODImg = props => {
+
+  const {APODobj} = props;
+
   return (
     <div className="APODImg">
-      <img src="" alt="APOD" />
+      <img src={APODobj.url} alt="APOD"/>
     </div>
   )
 }
@@ -50,7 +50,7 @@ const APODImg = props => {
 function APOD() {
 
   const [carouselDateArray, setCarouselDateArray] = useState([]);//dates array
-  const [carouselObjArray, setCarouselObjArray] = useState([]);// APOD objects
+  const [APODImgObj, setAPODImgObj] = useState({});// APOD objects
   
   useEffect (() => {
     // Using moment library to get dates for Carousel
@@ -66,30 +66,18 @@ function APOD() {
   
   useEffect(() => {
 
-    //Setting up array of JSON obj from APOD API
-
-    function provider(date) {
-
-      const tempData = [];
-
-      axios
-      .get(`${APOD_API_URL}?api_key=${API_KEY}&date=${date}`)
+    axios
+      .get(`${APOD_API_URL}?api_key=${API_KEY}&date=${carouselDateArray[0]}`)
         .then(res => {
-          tempData.push(res.data);
+          setAPODImgObj(res.data);
         })
         .catch(err => {
           console.log("Error: ",err);
         })
-
-        return tempData;
-
-    }
+    
 
 
-    setCarouselObjArray(carouselDateArray.map(date => provider(date)));
-
-
-  },[carouselDateArray]);
+  },[]);
 
   
 
@@ -98,7 +86,7 @@ function APOD() {
       <Carousel />
       <div className="under-carousel">
         <APODForm />
-        <APODImg />
+        <APODImg APODobj={APODImgObj}/>
       </div>
     </div>
   );
