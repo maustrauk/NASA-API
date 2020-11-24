@@ -6,16 +6,6 @@ import moment from "moment";
 
 import {APOD_API_URL, API_KEY} from "../mic/mic";
 
-
-const errorObj ={
-  date : "n/a",
-  url : "https://cdn.dribbble.com/users/1449854/screenshots/4136663/no_data_found.png",
-  title : "No Data found",
-  explanation : "NASA didn't upload APOD yet! Wait for couple hours. ",
-  hdurl : "n/a",
-  copyright : "n/a",
-};
-
 const initDate = moment();
 
 export const loader = (callback, date) => {
@@ -32,8 +22,6 @@ export const loader = (callback, date) => {
 }
 
 
-
-
 const APODForm = props => {
 
   const {date, setAPODdate} = props;
@@ -42,14 +30,17 @@ const APODForm = props => {
     setAPODdate(moment(event.target.value));
   }
 
+
   return (
     <div className="APODForm">
-      <form>
+      <form >
+        <p>Choose your's date</p>
         <div className="input">
           <input type="date"
           value={date.format('YYYY-MM-DD').toString()}
-          onChange={onChange}/>
-          <button>Submit</button>
+          onChange={onChange}
+          max={moment().format('YYYY-MM-DD').toString()}
+          min={moment().subtract(5, "year").format('YYYY-MM-DD').toString()}/>
         </div>
       </form>
     </div>
@@ -63,9 +54,9 @@ const APODImg = props => {
   return (
     <div className="APODImg">
       <h1>{APODobj.title}</h1>
-      <p>{APODobj.date}</p>
+      <p>Date: {APODobj.date}</p>
       <img src={APODobj.url} alt="APOD"/>
-      <div>
+      <div className="explanation">
         <p>{APODobj.explanation}</p>
       </div>
     </div>
@@ -81,8 +72,6 @@ function APOD() {
 
   const [APODdate, setAPODdate] = useState(initDate);
 
-
-  
   
   useEffect(() => {
 
@@ -91,14 +80,14 @@ function APOD() {
     loader(setAPODImgObj, date);
 
 
-  },[]);
+  },[APODdate]);
 
   
 
   return (
     <div className="APOD-container">
-      <APODForm date={APODdate} setAPODdate={setAPODdate}/>
       <APODImg APODobj={APODImgObj}/>
+      <APODForm date={APODdate} setAPODdate={setAPODdate} />
     </div>
   );
 }
